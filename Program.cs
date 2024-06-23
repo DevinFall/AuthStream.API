@@ -1,4 +1,5 @@
 using AuthStream.API.Data;
+using AuthStream.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,8 @@ else
     builder.Services.AddDbContext<ApplicationDbContext>(options => 
         options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 }
+
+builder.Services.AddScoped<ConfigurationService>();
 
 var app = builder.Build();
 

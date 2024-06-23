@@ -14,8 +14,16 @@ builder.Services.AddSwaggerGen();
 
 // Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options => 
+        options.UseSqlite(connectionString));
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options => 
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+}
 
 var app = builder.Build();
 

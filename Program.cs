@@ -27,6 +27,7 @@ else
 }
 
 builder.Services.AddScoped<ConfigurationService>();
+builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
 

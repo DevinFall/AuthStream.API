@@ -485,3 +485,5 @@ $RECYCLE.BIN/
 
 # Database files
 *.db*
+
+# Development appsettings

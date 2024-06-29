@@ -1,9 +1,8 @@
 using System.Security.Claims;
-using Application.Interfaces;
+using AuthStream.API.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TrekReserve.Contracts.TrekReserve.Auth;
-using TrekReserve.Contracts.TrekReserve.Common;
+using TrekReserve.Auth.Services;
 
 namespace TrekReserve.Auth.Controllers;
 
@@ -11,8 +10,8 @@ namespace TrekReserve.Auth.Controllers;
 [Route("/api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService;
-    public AuthController(IAuthenticationService authenticationService)
+    private readonly AuthenticationService _authenticationService;
+    public AuthController(AuthenticationService authenticationService)
     {
         _authenticationService = authenticationService;
     }

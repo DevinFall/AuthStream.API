@@ -1,17 +1,16 @@
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
-using Application.Interfaces;
-using Domain.Entities;
+using AuthStream.API.Data;
+using AuthStream.API.DTOs;
+using AuthStream.API.Helpers;
+using AuthStream.API.Models;
+using AuthStream.API.Services;
 using Microsoft.EntityFrameworkCore;
-using TrekReserve.Auth.Data;
-using TrekReserve.Auth.Helpers;
-using TrekReserve.Contracts.TrekReserve.Auth;
-using TrekReserve.Contracts.TrekReserve.Common;
 
 namespace TrekReserve.Auth.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly ConfigurationService _configuration;
@@ -48,7 +47,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 new Claim("token_type", "account_login"),
                 new Claim(ClaimTypes.NameIdentifier, dbUser.Id),
-                new Claim(ClaimTypes.Name, dbUser.FullName),
+                new Claim(ClaimTypes.Name, dbUser.Name),
                 new Claim(ClaimTypes.Email, dbUser.Email),
                 new Claim("admin", dbUser.IsAdmin.ToString().ToLower()),
                 new Claim("account_confirmed", dbUser.IsAccountConfirmed.ToString().ToLower())
@@ -76,7 +75,7 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             // Check if email is taken
-            if (await _dbContext.Users.AnyAsync(u => u.Email == registerForm.Email))
+            if (await _dbContext.Users.AnyAsync(u => u.Email.ToLower() == registerForm.Email.ToLower()))
             {
                 throw new Exception($"There is already an account using that email. Please try another.");
             }
@@ -87,7 +86,7 @@ public class AuthenticationService : IAuthenticationService
             // Create a user object
             var newUser = new User
             {
-                FullName = registerForm.FullName,
+                Name = registerForm.Name,
                 Email = registerForm.Email.ToLower(),
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt
@@ -100,7 +99,7 @@ public class AuthenticationService : IAuthenticationService
             // TODO: Schedule user deletion if email
             //  is not confirmed within 15 minutes
 
-            var hostBaseUrl = _configuration.GetSection("Website:Address");
+            var hostBaseUrl = _configuration.GetSection("Client:BaseAddress");
 
             var confirmationTokenClaims = new List<Claim>
             {
@@ -111,11 +110,11 @@ public class AuthenticationService : IAuthenticationService
 
             var confirmationToken = _tokenService.CreateJWT(confirmationTokenClaims, confirmationTokenExpirationTime);
             
-            var confirmationEndpoint = _configuration.GetSection("Website:ConfirmationEndpoint");
-            var confirmationUrl = $"{hostBaseUrl}/{confirmationEndpoint}/{confirmationToken}";
+            var confirmationEndpoint = _configuration.GetSection("Client:Endpoints:ConfirmAccountEmail");
+            var confirmationUrl = $"{hostBaseUrl}{confirmationEndpoint}/{confirmationToken}";
 
             var fromAddress = new MailAddress(_emailService.SMTPUser, "TrekReserve");
-            var toAddress = new MailAddress(newUser.Email, newUser.FullName);
+            var toAddress = new MailAddress(newUser.Email, newUser.Name);
             var mailMessage = new MailMessage(fromAddress, toAddress)
             {
                 Subject = "Verify your TrekReserve Account",
@@ -220,7 +219,7 @@ public class AuthenticationService : IAuthenticationService
 
             var email = emailClaim.Value;
 
-            var hostBaseUrl = _configuration.GetSection("Website:Address");
+            var hostBaseUrl = _configuration.GetSection("Client:BaseAddress");
 
             var confirmationTokenClaims = new List<Claim>
             {
@@ -231,8 +230,8 @@ public class AuthenticationService : IAuthenticationService
 
             var confirmationToken = _tokenService.CreateJWT(confirmationTokenClaims, confirmationTokenExpirationTime);
             
-            var confirmationEndpoint = _configuration.GetSection("Website:ConfirmationEndpoint");
-            var confirmationUrl = $"{hostBaseUrl}/{confirmationEndpoint}/{confirmationToken}";
+            var confirmationEndpoint = _configuration.GetSection("Client:Endpoints:ConfirmAccountEmail");
+            var confirmationUrl = $"{hostBaseUrl}{confirmationEndpoint}/{confirmationToken}";
 
             var fromAddress = new MailAddress(_emailService.SMTPUser, "TrekReserve");
             var toAddress = new MailAddress(email, email);

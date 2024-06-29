@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mail;
+using AuthStream.API.Services;
 
 namespace TrekReserve.Auth.Services;
 

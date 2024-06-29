@@ -1,6 +1,7 @@
 using AuthStream.API.Data;
 using AuthStream.API.Services;
 using Microsoft.EntityFrameworkCore;
+using TrekReserve.Auth.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure DbContext
+// Configure DbContext to use Sqlite in development
+//  and MySQL in production.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (builder.Environment.IsDevelopment())
 {
@@ -28,6 +30,8 @@ else
 
 builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<EmailSenderService>();
+builder.Services.AddScoped<AuthenticationService>();
 
 var app = builder.Build();
 

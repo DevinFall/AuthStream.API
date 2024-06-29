@@ -13,7 +13,7 @@ public class TokenService
         _configuration = configuration;
 
         signingKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration.GetSection("Security:Key")));
+            Encoding.UTF8.GetBytes(_configuration.GetSection("Encryption:SigningKey")));
     }
 
     private SymmetricSecurityKey signingKey;

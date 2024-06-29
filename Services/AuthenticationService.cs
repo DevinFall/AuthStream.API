@@ -150,9 +150,9 @@ public class AuthenticationService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<bool>> VerifyEmailAsync(string confirmationToken)
+    public async Task<ServiceResponse<string>> VerifyEmailAsync(string confirmationToken)
     {
-        var serviceResponse = new ServiceResponse<bool>();
+        var serviceResponse = new ServiceResponse<string>();
 
         try
         {
@@ -207,9 +207,9 @@ public class AuthenticationService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<bool>> ResendConfirmationEmail(IEnumerable<Claim> userClaims)
+    public async Task<ServiceResponse<string>> ResendConfirmationEmail(IEnumerable<Claim> userClaims)
     {
-        var serviceResponse = new ServiceResponse<bool>();
+        var serviceResponse = new ServiceResponse<string>();
 
         try
         {

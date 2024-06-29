@@ -64,7 +64,7 @@ public class AuthenticationService
             serviceResponse.Message = ex.Message;
         }
 
-        // Return JWT of type 'Login' or null
+        // Return JWT of type 'Login'
         return serviceResponse;
     }
 
@@ -113,13 +113,15 @@ public class AuthenticationService
             var confirmationEndpoint = _configuration.GetSection("Client:Endpoints:ConfirmAccountEmail");
             var confirmationUrl = $"{hostBaseUrl}{confirmationEndpoint}/{confirmationToken}";
 
-            var fromAddress = new MailAddress(_emailService.SMTPUser, "TrekReserve");
+            var clientName = _configuration.GetSection("Client:Name");
+
+            var fromAddress = new MailAddress(_emailService.SMTPUser, clientName);
             var toAddress = new MailAddress(newUser.Email, newUser.Name);
             var mailMessage = new MailMessage(fromAddress, toAddress)
             {
-                Subject = "Verify your TrekReserve Account",
+                Subject = $"Verify your {clientName} Account",
                 Body =
-                    "<b>Please verify your TrekReserve account.</b><br>" +
+                    $"<b>Please verify your {clientName} account.</b><br>" +
                     "<e>You won't be able to use our service until your email is confirmed.</e><br>" +
                     $"<p>Click <a href='{confirmationUrl}'>here</a> to activate your account.</p>",
                 BodyEncoding = Encoding.UTF8,
@@ -134,6 +136,7 @@ public class AuthenticationService
                 Password = registerForm.Password
             };
 
+            // Return JWT from LoginAsync method
             serviceResponse = await LoginAsync(loginForm);
             serviceResponse.Message = "Successfully created account. The client can now login with the attatched token.";
         }
@@ -147,9 +150,9 @@ public class AuthenticationService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<string>> VerifyEmailAsync(string confirmationToken)
+    public async Task<ServiceResponse<bool>> VerifyEmailAsync(string confirmationToken)
     {
-        var serviceResponse = new ServiceResponse<string>();
+        var serviceResponse = new ServiceResponse<bool>();
 
         try
         {
@@ -204,9 +207,9 @@ public class AuthenticationService
         return serviceResponse;
     }
 
-    public async Task<ServiceResponse<string>> ResendConfirmationEmail(IEnumerable<Claim> userClaims)
+    public async Task<ServiceResponse<bool>> ResendConfirmationEmail(IEnumerable<Claim> userClaims)
     {
-        var serviceResponse = new ServiceResponse<string>();
+        var serviceResponse = new ServiceResponse<bool>();
 
         try
         {
@@ -233,13 +236,16 @@ public class AuthenticationService
             var confirmationEndpoint = _configuration.GetSection("Client:Endpoints:ConfirmAccountEmail");
             var confirmationUrl = $"{hostBaseUrl}{confirmationEndpoint}/{confirmationToken}";
 
-            var fromAddress = new MailAddress(_emailService.SMTPUser, "TrekReserve");
+            var clientName = _configuration.GetSection("Client:Name");
+
+            var fromAddress = new MailAddress(_emailService.SMTPUser, clientName);
             var toAddress = new MailAddress(email, email);
+
             var mailMessage = new MailMessage(fromAddress, toAddress)
             {
-                Subject = "Verify your TrekReserve Account",
+                Subject = $"Verify your {clientName} Account",
                 Body =
-                    "<b>Please verify your TrekReserve account.</b><br>" +
+                    $"<b>Please verify your {clientName} account.</b><br>" +
                     "<e>You won't be able to use our service until your email is confirmed.</e><br>" +
                     $"<p>Click <a href='{confirmationUrl}'>here</a> to activate your account.</p>",
                 BodyEncoding = Encoding.UTF8,

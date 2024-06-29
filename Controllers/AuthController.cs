@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AuthStream.API.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -30,13 +30,14 @@ With docker installed, download the latest version of AuthStream
 by running the following:
 `docker pull ghcr.io/devinfall/authstream.api:latest`
 
-#### Migrations
+#### Database Migrations
 
 DO NOT RUN THIS ON A DATABASE WITH EXISTING DATA!
 This step may cause data loss if you do so, because some
 existing tables might be deleted.
 
-You'll need to set up your database. We recommend using MySQL.
+You'll need to set up your database, but this is something that
+you'll only do once. We recommend using MySQL as a production db.
 The only thing you need to do is get the `User` model from the
 `Models` folder in the source code, and create a table for it
 using the `dotnet ef` tool. You will not be able to use

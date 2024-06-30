@@ -109,7 +109,8 @@ you'll need to set the following environment variables:
 #### Run the Docker Image
 
 Once your environment variables are set up, all you'll need to do
-is run the following:
+is run the following to expose AuthStream.API on port 8080 of your
+machine:
 
 `docker run -d -p 8080:80 -e [Environment Variables Here] ghcr.io/devinfall/authstream.api:latest`
 

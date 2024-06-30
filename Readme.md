@@ -61,6 +61,8 @@ the following:
 7. Run `dotnet ef database update` to apply the migrations and
    create new tables in your database.
 
+#### Environment Variables
+
 Next, you'll have to do some configuration. When running the image,
 you'll need to set the following environment variables:
 
@@ -102,6 +104,8 @@ you'll need to set the following environment variables:
    `example.com/verify/some-token-here`. Again, your service needs to
    send a PUT request from that endpoint to the AuthStream email
    verification endpoint.
+
+#### Run the Docker Image
 
 Once your environment variables are set up, all you'll need to do
 is run the following:

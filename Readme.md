@@ -33,9 +33,25 @@ by running the following:
 You'll need to set up your database. We recommend using MySQL.
 The only thing you need to do is get the `User` model from the
 `Models` folder in the source code, and create a table for it
-using the `dotnet ef` tool. If you don't know how to do this,
-please feel free to google. We'll come back to document this
-part in more detail in the future.
+using the `dotnet ef` tool. 
+
+To create a database with the `Users` table, you'll have to do
+the following:
+1. Download the AuthStream.API source code on GitHub.
+2. Download the .NET SDK and CLI tool by following the instructions
+    listed [here](https://dotnet.microsoft.com/en-us/download).
+3. Download the `dotnet ef` CLI tool by running the following
+    in a terminal: `dotnet tool install dotnet-ef`.
+4. Run the following command and replace brackets with your MySQL 
+    database's connection information (don't include the brackets):
+    `export ConnectionStrings__DefaultConnection="server=[your server];port=[your mysql port];database=[your database];user=[your user];password=[user's password]"`
+5. Open a terminal inside of the source code for AuthStream and
+    run `dotnet ef migrations add InitialCreate -o ./Data/Migrations`
+6. Run `dotnet ef database update` to apply the migrations and
+    create new tables in your database.
+DO NOT RUN THIS ON A DATABASE WITH EXISTING DATA!
+This step may cause data loss if you do so, because some
+existing tables might be deleted.
 
 Next, you'll have to do some configuration. When running the image,
 you'll need to set the following environment variables:

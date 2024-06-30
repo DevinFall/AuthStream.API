@@ -82,3 +82,8 @@ Once your environment variables are set up, all you'll need to do
 is run the following:
 
 `docker run -d -p 8080:80 -e [Environment Variables Here] ghcr.io/devinfall/authstream.api:latest`
+
+Environment variables are inserted using the following pattern:
+`[Variable]=[Value]`
+For example:
+`Client__Name=TyrHub`
